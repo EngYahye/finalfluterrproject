@@ -1,103 +1,50 @@
+import 'package:pizza_application/app.dart';
+import 'package:pizza_application/firebase_options.dart';
+import 'package:pizza_application/screens/screens.dart';
+import 'package:pizza_application/theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
 
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData.light().copyWith(
-      appBarTheme: AppBarTheme(backgroundColor: Colors.deepOrangeAccent),
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  final client = StreamChatClient(streamKey);
+
+  runApp(
+    MyApp(
+      client: client,
+      appTheme: AppTheme(),
     ),
-    home: Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Pizza Restraunt',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 30.0,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              margin: EdgeInsets.all(10.0),
-              color: Colors.deepOrangeAccent,
-              child: Row(
-                children: [
-                  Image(
-                    image: AssetImage('assets/images/img3.png'),
-                    width: 100.0,
-                    height: 100.0,
-                  ),
-                  SizedBox(
-                    width: 20.0,
-                  ),
-                  Text(
-                    'Vegetable Pizza',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 30.0),
-                  )
-                ],
-              ),
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              margin: EdgeInsets.all(10.0),
-              color: Colors.deepOrangeAccent,
-              child: Row(
-                children: [
-                  Image(
-                    image: AssetImage('assets/images/img2.png'),
-                    width: 100.0,
-                    height: 100.0,
-                  ),
-                  SizedBox(
-                    width: 20.0,
-                  ),
-                  Text(
-                    'Cheese Pizza',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 30.0),
-                  )
-                ],
-              ),
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              margin: EdgeInsets.all(10.0),
-              color: Colors.deepOrangeAccent,
-              child: Row(
-                children: [
-                  Image(
-                    image: AssetImage('assets/images/box.png'),
-                    width: 100.0,
-                    height: 100.0,
-                  ),
-                  SizedBox(
-                    width: 20.0,
-                  ),
-                  Text(
-                    'Box of Fries',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 30.0),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  ));
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({
+    Key? key,
+    required this.client,
+    required this.appTheme,
+  }) : super(key: key);
+
+  final StreamChatClient client;
+  final AppTheme appTheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: appTheme.light,
+      darkTheme: appTheme.dark,
+      debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.dark,
+      title: 'Chatter',
+      builder: (context, child) {
+        return StreamChatCore(
+          client: client,
+          child: child!,
+        );
+      },
+      home: const SplashScreen(),
+    );
+  }
 }
